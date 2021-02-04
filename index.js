@@ -1,51 +1,80 @@
 const express = require('express');
 const { ApolloServer, gql } = require('apollo-server-express');
 
-const users = [
+const userList = [
+  {
+    id: "1",
+    username: 'Bob',
+    location: '3'
+  }, {
+    id: "2",
+    username: 'Alice',
+    location: '1'  
+  }, {
+    id: "3",
+    username: 'Eric',
+    location: '2' 
+  }
+];
+
+const locationList = [
   {
     id: '1',
-    username: 'Bob',
-    location: 'CA'
+    city: 'New York',
+    state: 'NY' 
+
   }, {
     id: '2',
-    username: 'Alice',
-    location: 'NY'  
+    city: 'Chicago',
+    state: 'IL'   
   }, {
     id: '3',
-    username: 'Eric',
-    location: 'MI'   
+    city: 'San Francisco',
+    state: 'CA'
   }
 ];
 
 const typeDefs = gql`
   type Query {
-    users: [User]
-    user(id: ID, username: String): User
+    getUsers: [UserObject]
+    getUserById(id: ID): UserObject
   }
 
-  type User {
+  type LocationObject {
+    id: ID
+    city: String
+    state: String
+  }
+
+  type UserObject {
     id: ID
     username: String
-    location: String
+    location: LocationObject
   }
 `;
 
 const resolvers = {
   Query: {
-    user: (_, args) => {
-      if (args.id) return users.find((user) => user.id === args.id);
-      if (args.username) return users.find((user) => user.username === args.username);
-      return null;
+    getUserById: (parent, args) => {
+      return userList.find((user) => user.id === args.id);
     },
-    users: () => {
-      return users;
+    getUsers: (parent, args) => {
+      return userList;
     },
   },
+  UserObject: {
+    location: (user) => {
+      return locationList.find((location) => location.id === user.location);
+    },
+  }
 };
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers
+});
 const app = express();
-server.applyMiddleware({ app });
+server.applyMiddleware({ app, path: '/' });
 app.listen({ port: 4000 }, () =>
-  console.log(`Listening at http://localhost:4000${server.graphqlPath}`)
+  console.log(`${new Date(Date.now()).toISOString()} Listening at http://localhost:4000`)
 );
