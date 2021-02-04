@@ -1,6 +1,6 @@
 # simple-node-graphql server
 
-A reference implementation for a graphQL server that demonstrates REST GET with nested resources.
+A reference implementation for a GraphQL server that demonstrates REST GET with nested resources.
 
 ## Sample queries with results
 
