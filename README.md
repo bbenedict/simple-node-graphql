@@ -2,7 +2,7 @@
 
 A reference implementation for a graphQL server that uses
 
-## Sample curl commands to query server
+## Sample queries with results
 
 ### Get list of users
 
